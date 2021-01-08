@@ -13,7 +13,7 @@ public class MoveNote : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(0, -6.5f * Time.deltaTime, 0);
+        transform.Translate(0, -7.5f * Time.deltaTime, 0);
 
     }
 }
