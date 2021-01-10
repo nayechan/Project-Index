@@ -16,6 +16,8 @@ public class NoteCreator : MonoBehaviour
     private int processedNotes = 0;
     private int combo = 0;
 
+    private int ncount = 0;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -26,137 +28,200 @@ public class NoteCreator : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+
         foreach(GameObject g in createdNotes.ToList())
         {
-            if (g.transform.position.z < -1.5f)
+            if (g.transform.position.z < -2.0f)
             {
                 createdNotes.Remove(g);
                 GameObject.Destroy(g);
-                judgement(-1.5f);
+                judgement(-2.0f);
             }
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
+            GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
                 if (g.transform.position.x > -0.61f && g.transform.position.x < -0.59f
-                    && g.transform.position.z < 1.5f)
+                    && g.transform.position.z < 2.0f)
                 {
                     float pos = g.transform.position.z;
-                    createdNotes.Remove(g);
-                    GameObject.Destroy(g);
-                    judgement(pos);
-                    break;
+                    if (targetNote == null || targetNote.transform.position.z > pos)
+                        targetNote = g;
                 }
+            }
+            if (targetNote != null)
+            {
+                createdNotes.Remove(targetNote);
+                GameObject.Destroy(targetNote);
+                judgement(targetNote.transform.position.z);
             }
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
+            GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
                 if (g.transform.position.x > -0.21f && g.transform.position.x < -0.19f
-                    && g.transform.position.z < 1.5f)
-                    {
+                    && g.transform.position.z < 2.0f)
+                {
                     float pos = g.transform.position.z;
-                    createdNotes.Remove(g);
-                    GameObject.Destroy(g);
-                    judgement(pos);
-                    break;
+                    if (targetNote == null || targetNote.transform.position.z > pos)
+                        targetNote = g;
                 }
+            }
+            if (targetNote != null)
+            {
+                createdNotes.Remove(targetNote);
+                GameObject.Destroy(targetNote);
+                judgement(targetNote.transform.position.z);
             }
         }
         if (Input.GetKeyDown(KeyCode.J))
         {
+            GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
                 if (g.transform.position.x > 0.19f && g.transform.position.x < 0.21f
-                    && g.transform.position.z < 1.5f)
+                    && g.transform.position.z < 2.0f)
                 {
                     float pos = g.transform.position.z;
-                    createdNotes.Remove(g);
-                    GameObject.Destroy(g);
-                    judgement(pos);
-                    break;
+                    if (targetNote == null || targetNote.transform.position.z > pos)
+                        targetNote = g;
                 }
+            }
+            if (targetNote != null)
+            {
+                createdNotes.Remove(targetNote);
+                GameObject.Destroy(targetNote);
+                judgement(targetNote.transform.position.z);
             }
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
+            GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
                 if (g.transform.position.x > 0.59f && g.transform.position.x < 0.61f
-                    && g.transform.position.z < 1.5f)
+                    && g.transform.position.z < 2.0f)
                 {
                     float pos = g.transform.position.z;
-                    createdNotes.Remove(g);
-                    GameObject.Destroy(g);
-                    judgement(pos);
-                    break;
+                    if (targetNote == null || targetNote.transform.position.z > pos)
+                        targetNote = g;
                 }
+            }
+            if (targetNote != null)
+            {
+                createdNotes.Remove(targetNote);
+                GameObject.Destroy(targetNote);
+                judgement(targetNote.transform.position.z);
             }
         }
     }
 
     public void judgement(float pos)
     {
+        string judgeString = "";
         pos = Mathf.Abs(pos);
-        if(pos < 0.3f)
+        if(pos < 0.4f)
         {
-            hp += 0.5f;
+            hp += 0.4f;
             ++combo;
-            score+=2;
+            score += 3;
+            judgeString = "Perfect";
         }
-        else if(pos < 0.7f)
+        else if(pos < 0.8f)
         {
-            hp += 0.3f;
+            hp += 0.2f;
             ++combo;
-            score += 1;
+            score += 2;
+            judgeString = "Great";
         }
-        else if(pos < 1.2f)
+        else if(pos < 1.6f)
         {
             hp += 0.1f;
             ++combo;
+            score += 1;
+            judgeString = "Good";
         }
         else
         {
             hp -= 5;
             combo = 0;
+            judgeString = "Miss";
         }
         if (hp > 100.0f) hp = 100.0f;
         if (hp < 0.0f) hp = 0.0f;
         ++processedNotes;
 
-        float accuracy = (float)score / (float)processedNotes * 50.0f;
+        float accuracy = (float)score / (float)processedNotes * 100.0f / 3.0f;
 
         scoreDisplay.GetComponent<Text>().text = accuracy.ToString("F2") + "%";
-        hpDisplay.GetComponent<Text>().text = (int)hp + "/100";
-        comboDisplay.GetComponent<Text>().text = combo + "x";
+        hpDisplay.GetComponent<Image>().fillAmount = hp / 100.0f;
+        if (judgeString != "Miss")
+            comboDisplay.GetComponent<Text>().text = judgeString + " " + combo;
+        else comboDisplay.GetComponent<Text>().text = judgeString;
     }
 
     private IEnumerator createNote()
     {
-        int prevLane = -1;
+        int[] prevLane = { -1, -1, -1 };
+        int prevCount = 0;
         float delay = 0.2f;
-
-        while(true)
+        
+        while (true)
         {
-            int   randomLane    = 0;
-            float randomX       = 0.0f;
-            float randomZ       = 0.0f;
+            int count = 0;
+            float randomX = 0.0f;
+            float randomZ = 0.0f;
 
-            do
+            ++ncount;
+
+            int[] randomLane = new int[3];
+
+            count = ncount % 4;
+
+            if (count == 3) count = 1;
+            if (count == 0) count = 2;
+
+            if (count > 4 - prevCount)
+                count = 4 - prevCount;
+
+            for (int i = 0; i < count; ++i)
             {
-                randomLane = Random.Range(0, 4);
-            } while (prevLane == randomLane);
-            randomX = -0.6f + (0.4f * randomLane);
+                bool flag;
+                do
+                {
+                    flag = false;
+                    randomLane[i] = Random.Range(0, 4);
+                    for (int j = 0; j < i; ++j)
+                    {
+                        if (randomLane[j] == randomLane[i])
+                            flag = true;
+                    }
+                    for (int j = 0; j < prevCount; ++j)
+                    {
+                        if (prevLane[j] == randomLane[i])
+                            flag = true;
+                    }
+                } while (flag);
+                randomX = -0.6f + (0.4f * randomLane[i]);
 
-            GameObject g = GameObject.Instantiate(normalNote, new Vector3(randomX, -0.999f, 7.3f),
-                Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
+                GameObject g = GameObject.Instantiate(normalNote, new Vector3(randomX, -0.999f, 7.3f),
+                    Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
 
-            createdNotes.Add(g);
+                createdNotes.Add(g);
+            }
 
-            prevLane = randomLane;
-            if (delay > 0.08f) delay -= 0.0002f;
+            for (int i = 0; i < count; ++i)
+            {
+                prevLane[i] = randomLane[i];
+            }
+
+            //prevLane = randomLane;
+            if (delay > 0.075f) delay -= 0.0001f;
+            prevCount = count;
             yield return new WaitForSeconds(delay);
         }
     }

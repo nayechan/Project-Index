@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Judgement Line
+    uniqueID: 1087833771
+    locked: 0
+  - name: Note
+    uniqueID: 1393774999
+    locked: 0
+  - name: Cover
+    uniqueID: 1618835003
+    locked: 0
+  - name: Pane
+    uniqueID: 1000960397
+    locked: 0

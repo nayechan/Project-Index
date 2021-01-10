@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3616501480950260189}
   - component: {fileID: 3616501480950260186}
   - component: {fileID: 3616501480950260187}
-  - component: {fileID: 3616501480950260184}
   - component: {fileID: 2519427009229795430}
   m_Layer: 0
   m_Name: note
@@ -29,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3616501480950260185}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.6, y: -0.9998, z: 0}
+  m_LocalPosition: {x: -0.6, y: -0.999, z: 0}
   m_LocalScale: {x: 0.38, y: 0.2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -96,19 +95,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &3616501480950260184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3616501480950260185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc0963aa0157aab49a72816ce7a97106, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RenderQueue: 3000
 --- !u!114 &2519427009229795430
 MonoBehaviour:
   m_ObjectHideFlags: 0
