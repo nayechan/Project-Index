@@ -1015,7 +1015,7 @@ GameObject:
   - component: {fileID: 2039872310}
   - component: {fileID: 2039872309}
   m_Layer: 0
-  m_Name: NoteCreator
+  m_Name: Note Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1034,6 +1034,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalNote: {fileID: 3616501480950260185, guid: b5fa5dbaed11dce4ab76723b3d5c6ee9,
+    type: 3}
+  longNote: {fileID: 6271453458295196869, guid: fc110bf5a98b47547a172d264228baa7,
     type: 3}
   scoreDisplay: {fileID: 1953590392}
   hpDisplay: {fileID: 953288383}
