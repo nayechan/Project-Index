@@ -43,7 +43,7 @@ public class NoteManager : MonoBehaviour
             GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
-                if (AlmostEqual(g.transform.position.x, -0.6f) && g.transform.position.z < 1.5f)
+                if (AlmostEqual(g.transform.position.x, -0.6f) && g.transform.position.z < 2.0f)
                 {
                     float pos = g.transform.position.z;
                     if (targetNote == null || targetNote.transform.position.z > pos)
@@ -62,7 +62,7 @@ public class NoteManager : MonoBehaviour
             GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
-                if (AlmostEqual(g.transform.position.x, -0.2f) && g.transform.position.z < 1.5f)
+                if (AlmostEqual(g.transform.position.x, -0.2f) && g.transform.position.z < 2.0f)
                 {
                     float pos = g.transform.position.z;
                     if (targetNote == null || targetNote.transform.position.z > pos)
@@ -81,7 +81,7 @@ public class NoteManager : MonoBehaviour
             GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
-                if (AlmostEqual(g.transform.position.x, 0.2f) && g.transform.position.z < 1.5f)
+                if (AlmostEqual(g.transform.position.x, 0.2f) && g.transform.position.z < 2.0f)
                 {
                     float pos = g.transform.position.z;
                     if (targetNote == null || targetNote.transform.position.z > pos)
@@ -100,7 +100,7 @@ public class NoteManager : MonoBehaviour
             GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
-                if (AlmostEqual(g.transform.position.x, 0.6f) && g.transform.position.z < 1.5f)
+                if (AlmostEqual(g.transform.position.x, 0.6f) && g.transform.position.z < 2.0f)
                 {
                     float pos = g.transform.position.z;
                     if (targetNote == null || targetNote.transform.position.z > pos)
@@ -122,7 +122,7 @@ public class NoteManager : MonoBehaviour
         pos = Mathf.Abs(pos);
         if(pos < 0.4f)
         {
-            hp += 0.4f;
+            hp += 0.3f;
             ++combo;
             score += 3;
             judgeString = "Perfect";
@@ -164,7 +164,7 @@ public class NoteManager : MonoBehaviour
     {
         int[] prevLane = { -1, -1, -1 };
         int prevCount = 0;
-        float delay = 0.2f;
+        float delay = 0.16f;
         
         while (true)
         {
@@ -218,8 +218,6 @@ public class NoteManager : MonoBehaviour
                 prevLane[i] = randomLane[i];
             }
 
-            //prevLane = randomLane;
-            if (delay > 0.075f) delay -= 0.0001f;
             prevCount = count;
             yield return new WaitForSeconds(delay);
         }
