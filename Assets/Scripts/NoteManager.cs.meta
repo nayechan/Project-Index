@@ -3,7 +3,12 @@ guid: fe7874b006fe07c479653a6d1accd001
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - normalNote: {instanceID: 0}
+  - longNote: {instanceID: 0}
+  - scoreDisplay: {instanceID: 0}
+  - hpDisplay: {instanceID: 0}
+  - comboDisplay: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -4,11 +4,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NoteCreator : MonoBehaviour
+public class NoteManager : MonoBehaviour
 {
     //필요한 프리팹
     [SerializeField]
-    private GameObject normalNote, scoreDisplay, hpDisplay, comboDisplay;
+    private GameObject normalNote, longNote, scoreDisplay, hpDisplay, comboDisplay;
 
     private List<GameObject> createdNotes;
     private float hp = 100;
@@ -43,8 +43,7 @@ public class NoteCreator : MonoBehaviour
             GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
-                if (g.transform.position.x > -0.61f && g.transform.position.x < -0.59f
-                    && g.transform.position.z < 2.0f)
+                if (AlmostEqual(g.transform.position.x, -0.6f) && g.transform.position.z < 1.5f)
                 {
                     float pos = g.transform.position.z;
                     if (targetNote == null || targetNote.transform.position.z > pos)
@@ -63,8 +62,7 @@ public class NoteCreator : MonoBehaviour
             GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
-                if (g.transform.position.x > -0.21f && g.transform.position.x < -0.19f
-                    && g.transform.position.z < 2.0f)
+                if (AlmostEqual(g.transform.position.x, -0.2f) && g.transform.position.z < 1.5f)
                 {
                     float pos = g.transform.position.z;
                     if (targetNote == null || targetNote.transform.position.z > pos)
@@ -83,8 +81,7 @@ public class NoteCreator : MonoBehaviour
             GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
-                if (g.transform.position.x > 0.19f && g.transform.position.x < 0.21f
-                    && g.transform.position.z < 2.0f)
+                if (AlmostEqual(g.transform.position.x, 0.2f) && g.transform.position.z < 1.5f)
                 {
                     float pos = g.transform.position.z;
                     if (targetNote == null || targetNote.transform.position.z > pos)
@@ -103,8 +100,7 @@ public class NoteCreator : MonoBehaviour
             GameObject targetNote = null;
             foreach (GameObject g in createdNotes.ToList())
             {
-                if (g.transform.position.x > 0.59f && g.transform.position.x < 0.61f
-                    && g.transform.position.z < 2.0f)
+                if (AlmostEqual(g.transform.position.x, 0.6f) && g.transform.position.z < 1.5f)
                 {
                     float pos = g.transform.position.z;
                     if (targetNote == null || targetNote.transform.position.z > pos)
@@ -206,7 +202,10 @@ public class NoteCreator : MonoBehaviour
                             flag = true;
                     }
                 } while (flag);
+
                 randomX = -0.6f + (0.4f * randomLane[i]);
+
+                GameObject note = (Random.Range(0.0f, 1.0f) < 0.3) ? longNote : normalNote;
 
                 GameObject g = GameObject.Instantiate(normalNote, new Vector3(randomX, -0.999f, 7.3f),
                     Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
@@ -225,4 +224,9 @@ public class NoteCreator : MonoBehaviour
             yield return new WaitForSeconds(delay);
         }
     }
+
+    private bool AlmostEqual(float a, float b)
+	{
+        return Mathf.Abs(a - b) < 0.0001;
+	}
 }
