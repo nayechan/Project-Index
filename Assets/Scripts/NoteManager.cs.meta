@@ -4,11 +4,12 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - normalNote: {instanceID: 0}
-  - longNote: {instanceID: 0}
   - scoreDisplay: {instanceID: 0}
   - hpDisplay: {instanceID: 0}
   - comboDisplay: {instanceID: 0}
+  - normalNote: {fileID: 3616501480950260185, guid: b5fa5dbaed11dce4ab76723b3d5c6ee9,
+      type: 3}
+  - longNote: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -7,10 +7,10 @@ using UnityEngine.UI;
 public class NoteManager : MonoBehaviour
 {
     //필요한 프리팹
-    [SerializeField]
-    private GameObject normalNote, longNote, scoreDisplay, hpDisplay, comboDisplay;
+    [SerializeField] private GameObject scoreDisplay, hpDisplay, comboDisplay;
+    [SerializeField] private GameObject normalNote, longNote;
 
-    private List<GameObject> createdNotes;
+    private List<Note> createdNotes;
     private float hp = 100;
     private int score = 0;
     private int processedNotes = 0;
@@ -21,27 +21,26 @@ public class NoteManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        createdNotes = new List<GameObject>();
+        createdNotes = new List<Note>();
         StartCoroutine("createNote");
     }
 
     // Update is called once per frame
     private void Update()
     {
-
-        foreach(GameObject g in createdNotes.ToList())
+        foreach(Note g in createdNotes.ToList())
         {
             if (g.transform.position.z < -2.0f)
             {
                 createdNotes.Remove(g);
                 GameObject.Destroy(g);
-                judgement(-2.0f);
+                judge(-2.0f);
             }
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
-            GameObject targetNote = null;
-            foreach (GameObject g in createdNotes.ToList())
+            Note targetNote = null;
+            foreach (Note g in createdNotes.ToList())
             {
                 if (AlmostEqual(g.transform.position.x, -0.6f) && g.transform.position.z < 2.0f)
                 {
@@ -54,13 +53,13 @@ public class NoteManager : MonoBehaviour
             {
                 createdNotes.Remove(targetNote);
                 GameObject.Destroy(targetNote);
-                judgement(targetNote.transform.position.z);
+                judge(targetNote.transform.position.z);
             }
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            GameObject targetNote = null;
-            foreach (GameObject g in createdNotes.ToList())
+            Note targetNote = null;
+            foreach (Note g in createdNotes.ToList())
             {
                 if (AlmostEqual(g.transform.position.x, -0.2f) && g.transform.position.z < 2.0f)
                 {
@@ -73,13 +72,13 @@ public class NoteManager : MonoBehaviour
             {
                 createdNotes.Remove(targetNote);
                 GameObject.Destroy(targetNote);
-                judgement(targetNote.transform.position.z);
+                judge(targetNote.transform.position.z);
             }
         }
         if (Input.GetKeyDown(KeyCode.J))
         {
-            GameObject targetNote = null;
-            foreach (GameObject g in createdNotes.ToList())
+            Note targetNote = null;
+            foreach (Note g in createdNotes.ToList())
             {
                 if (AlmostEqual(g.transform.position.x, 0.2f) && g.transform.position.z < 2.0f)
                 {
@@ -92,13 +91,13 @@ public class NoteManager : MonoBehaviour
             {
                 createdNotes.Remove(targetNote);
                 GameObject.Destroy(targetNote);
-                judgement(targetNote.transform.position.z);
+                judge(targetNote.transform.position.z);
             }
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
-            GameObject targetNote = null;
-            foreach (GameObject g in createdNotes.ToList())
+            Note targetNote = null;
+            foreach (Note g in createdNotes.ToList())
             {
                 if (AlmostEqual(g.transform.position.x, 0.6f) && g.transform.position.z < 2.0f)
                 {
@@ -111,12 +110,12 @@ public class NoteManager : MonoBehaviour
             {
                 createdNotes.Remove(targetNote);
                 GameObject.Destroy(targetNote);
-                judgement(targetNote.transform.position.z);
+                judge(targetNote.transform.position.z);
             }
         }
     }
 
-    public void judgement(float pos)
+    public void judge(float pos)
     {
         string judgeString = "";
         pos = Mathf.Abs(pos);
@@ -205,12 +204,12 @@ public class NoteManager : MonoBehaviour
 
                 randomX = -0.6f + (0.4f * randomLane[i]);
 
-                GameObject note = (Random.Range(0.0f, 1.0f) < 0.3) ? longNote : normalNote;
+                // Note note = (Random.Range(0.0f, 1.0f) < 0.3) ? longNote : normalNote
 
-                GameObject g = GameObject.Instantiate(normalNote, new Vector3(randomX, -0.999f, 7.3f),
+                GameObject g = Instantiate(normalNote, new Vector3(randomX, -0.999f, 7.3f),
                     Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
 
-                createdNotes.Add(g);
+                createdNotes.Add(g.GetComponent<Note>());
             }
 
             for (int i = 0; i < count; ++i)
