@@ -19,14 +19,21 @@ public class NoteManager : MonoBehaviour
     private int ncount = 0;
 
     private string version, title, artist;
-    private int bpm, offset;
+    private float bpm, offset;
+    private List<TimingData> timings;
     private List<NoteData> notes;
+
+    NoteController noteController;
+
+    private bool start = false;
+    private float startTime;
 
     // Start is called before the first frame update
     private void Start()
     {
         createdNotes = new List<Note>();
-        StartCoroutine("createNote");
+        Debug.Log("Press Space to Start");
+        // StartCoroutine("createNote");
     }
 
     // Update is called once per frame
@@ -115,6 +122,63 @@ public class NoteManager : MonoBehaviour
                 createdNotes.Remove(targetNote);
                 GameObject.Destroy(targetNote);
                 judge(targetNote.transform.position.z);
+            }
+        }
+
+        if (!start && Input.GetKeyDown(KeyCode.Space))
+		{
+            start = true;
+            
+            Debug.Log("Game Start!");
+            noteController = GameObject.Find("Note Controller").GetComponent<NoteController>();
+
+            startTime = Time.time;
+		}
+
+        if (start)
+		{
+            float interval = 60 / bpm;
+            float beat = (Time.time - startTime) / interval;
+
+            // note가 beat 오름차순으로 정렬되었다고 가정.
+            foreach (NoteData note in notes.ToList())
+			{
+                if (note.beat < beat)
+                {
+                    GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, 7.3f),
+                    Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
+                    noteController.AddNote(g);
+
+                    notes.Remove(note);
+                }
+				else
+				{
+                    break;
+				}
+            }
+
+            foreach (TimingData timing in timings.ToList())
+            {
+                if (timing.beat < beat)
+				{
+                    // Bpmdata / SpeedData
+                    if (true) // typeof(timing) == BpmData
+					{
+
+					}
+                    else if (true) // typeof(timing) == SpeedData
+					{
+
+					}
+					else
+					{
+                        Debug.Log("Timing Data Type Error");
+					}
+				}
+                else
+				{
+                    break;
+				}
             }
         }
     }
@@ -224,9 +288,6 @@ public class NoteManager : MonoBehaviour
             prevCount = count;
             yield return new WaitForSeconds(delay);
         }
-
-
-
     }
 
     public void SetVersion(string version)
@@ -244,16 +305,21 @@ public class NoteManager : MonoBehaviour
         this.artist = artist;
 	}
 
-    public void SetBpm(int bpm)
+    public void SetBpm(float bpm)
 	{
         this.bpm = bpm;
 	}
 
-    public void SetOffset(int offset)
+    public void SetOffset(float offset)
 	{
         this.offset = offset;
 	}
     
+    public void SetTimings(List<TimingData> timings)
+	{
+        this.timings = timings;
+	}
+
     public void SetNotes(List<NoteData> notes)
 	{
         this.notes = notes;

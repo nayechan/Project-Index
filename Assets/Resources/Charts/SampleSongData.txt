@@ -8,18 +8,18 @@ offset:200
 
 #timing
 bpm:200{beat:4}
-speed:1.5{beat:5}
+speed : 1.5 { beat : 5 }
 
 #notedata
-normalnote{ beat:11,key:1}
+normalnote{ beat:5,key:1}
 normalnote{beat :11,key:3}
 normalnote{beat: 12,key:1}
 normalnote{beat:12 ,key:2}
 normalnote{beat:12, key:3}
-normalnote{beat:12,key :4}
-normalnote{beat:20,key: 2}
-normalnote{beat:30,key:4 }
-normalnote{ beat:11,key:1}    
-normalnote {beat: 11.1 ,key:1}
-normalnote{ beat:10.51231,key:1}
-normalnote{ beat:13,key:1}
+normalnote{beat:13,key :4}
+normalnote{beat:18,key: 2}
+normalnote{beat:20,key:4 }
+normalnote{ beat:21,key:1}    
+normalnote {beat: 24.1 ,key:1}
+normalnote{ beat:25.51231,key:1}
+normalnote{ beat:26,key:1}
