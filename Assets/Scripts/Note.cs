@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Note : MonoBehaviour
 {
-    public static float speed = 12.5f;
     private float beat;
     private int key;
 
@@ -27,6 +26,8 @@ public class Note : MonoBehaviour
     // Update is called once per frame
     protected void Update()
     {
-        transform.Translate(0, speed * -Time.deltaTime, 0);
+        //transform.Translate(0, speed * -Time.deltaTime, 0);
     }
 }
+
+//TODO 노트 컨트롤러 클래스 추가, 그 클래스에 노트 움직이는 메소드도 옮기기

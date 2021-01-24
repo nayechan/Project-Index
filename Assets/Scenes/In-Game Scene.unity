@@ -789,7 +789,7 @@ GameObject:
   - component: {fileID: 1434245330}
   - component: {fileID: 1434245329}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Chart Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -839,7 +839,7 @@ GameObject:
   - component: {fileID: 1940417270}
   - component: {fileID: 1940417269}
   m_Layer: 5
-  m_Name: BackCanvas
+  m_Name: Back Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1016,7 +1016,7 @@ GameObject:
   - component: {fileID: 1979095538}
   - component: {fileID: 1979095537}
   m_Layer: 5
-  m_Name: FrontCanvas
+  m_Name: Front Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

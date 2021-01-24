@@ -18,6 +18,10 @@ public class NoteManager : MonoBehaviour
 
     private int ncount = 0;
 
+    private string version, title, artist;
+    private int bpm, offset;
+    private List<NoteData> notes;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -220,7 +224,40 @@ public class NoteManager : MonoBehaviour
             prevCount = count;
             yield return new WaitForSeconds(delay);
         }
+
+
+
     }
+
+    public void SetVersion(string version)
+	{
+        this.version = version;
+	}
+
+    public void SetTitle(string title)
+	{
+        this.title = title;
+	}
+
+    public void SetArtist(string artist)
+	{
+        this.artist = artist;
+	}
+
+    public void SetBpm(int bpm)
+	{
+        this.bpm = bpm;
+	}
+
+    public void SetOffset(int offset)
+	{
+        this.offset = offset;
+	}
+    
+    public void SetNotes(List<NoteData> notes)
+	{
+        this.notes = notes;
+	}
 
     private bool AlmostEqual(float a, float b)
 	{
