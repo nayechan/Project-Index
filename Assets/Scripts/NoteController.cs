@@ -5,36 +5,24 @@ using UnityEngine;
 
 public class NoteController : MonoBehaviour
 {
-    private float speed = 1.0f;
-    List<GameObject> notes = new List<GameObject>();
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private NoteData note;
+    private NoteManager noteManager;
 
     // Update is called once per frame
     void Update()
     {
-        foreach (GameObject note in notes.ToList())
-		{
-            if (note.transform.position.z < -1)
-			{
-                notes.Remove(note);
-                GameObject.Destroy(note);
-			}
-            note.transform.Translate(0, speed * -10.0f * Time.deltaTime, 0);
-        }
+        Debug.Log(noteManager);
+        transform.Translate(0, noteManager.GetSpeed() * -10.0f * Time.deltaTime, 0);
     }
 
-    public void SetSpeed(float speed)
-	{
-        this.speed = speed;
-	}
+    public void SetNoteData(NoteData note)
+    {
+        this.note = note;
+    }
 
-    public void AddNote(GameObject note)
-	{
-        notes.Add(note);
-	}
+    public void SetNoteManager(NoteManager noteManager)
+    {
+        this.noteManager = noteManager;
+        Debug.Log(noteManager);
+    }
 }

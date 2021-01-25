@@ -1,4 +1,8 @@
-﻿public class NoteData
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class NoteData
 {
 	public float beat;
 	public int key;

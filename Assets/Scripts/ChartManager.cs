@@ -11,9 +11,12 @@ public class ChartManager : MonoBehaviour
 	private List<TimingData> timings = new List<TimingData>();
 	private List<NoteData> notes = new List<NoteData>();
 
+	[SerializeField] NoteManager noteManager;
+
 	// Start is called before the first frame update
 	void Start()
 	{
+
 		string songData = ((TextAsset)Resources.Load("Charts/SampleSongData")).text;
 		RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
 
@@ -61,17 +64,17 @@ public class ChartManager : MonoBehaviour
 			Match match = Regex.Match(str, @"(?<=^normalnote)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*,\s*key\s*:\s*(\d+)\s*}(?=\s*$)", options);
 			float beat = float.Parse(match.Groups[1].Value);
 			int key = int.Parse(match.Groups[2].Value);
-			notes.Add(new NoteData(beat, key));
+			noteManager.AddNote(new NoteData(beat, key));
 		}
 
-		NoteManager noteManager = GameObject.Find("Note Manager").GetComponent<NoteManager>();
 		noteManager.SetVersion(version);
 		noteManager.SetTitle(title);
 		noteManager.SetArtist(artist);
 		noteManager.SetBpm(bpm);
 		noteManager.SetOffset(offset);
 		noteManager.SetTimings(timings);
-		noteManager.SetNotes(notes);
+
+		noteManager.SortNoteData();
 	}
 
 	// Update is called once per frame
