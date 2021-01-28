@@ -1,27 +1,27 @@
 ﻿public class TimingData
 {
+	public enum TYPE {
+		bpm = 0,
+		speed = 1
+	}
+
+	public TYPE type;
 	public float beat;
-}
+	public float value;
 
-public class BpmData : TimingData
-{
-	public float bpm;
-
-	public BpmData(float beat, float bpm)
+	public TimingData(TYPE type, float beat, float value)
 	{
+		this.type = type;
 		this.beat = beat;
-		this.bpm = bpm;
+		this.value = value;
+	}
+
+	public bool IsBpmData()
+	{
+		return type == TYPE.bpm;
+	}
+	public bool IsSpeedData()
+	{
+		return type == TYPE.speed;
 	}
 }
-
-public class SpeedData : TimingData
-{
-	public float speed;
-
-	public SpeedData(float beat, float speed)
-	{
-		this.beat = beat;
-		this.speed = speed;
-	}
-}
-

@@ -11,7 +11,6 @@ public class NoteController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(noteManager);
         transform.Translate(0, noteManager.GetSpeed() * -10.0f * Time.deltaTime, 0);
     }
 
@@ -23,6 +22,5 @@ public class NoteController : MonoBehaviour
     public void SetNoteManager(NoteManager noteManager)
     {
         this.noteManager = noteManager;
-        Debug.Log(noteManager);
     }
 }

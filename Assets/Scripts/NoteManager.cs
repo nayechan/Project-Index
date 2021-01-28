@@ -75,15 +75,20 @@ public class NoteManager : MonoBehaviour
             {
                 if (timing.beat < beat)
 				{
+                    
                     // Bpmdata / SpeedData
-                    if (true) // typeof(timing) == BpmData
+                    if (timing.IsBpmData()) // typeof(timing) == BpmData
 					{
-
+                        bpm = timing.value;
+                        timings.Remove(timing);
+                        Debug.Log("bpm: " + bpm);
 					}
-                    else if (true) // typeof(timing) == SpeedData
+                    else if (timing.IsSpeedData()) // typeof(timing) == SpeedData
 					{
-
-					}
+                        speed = timing.value;
+                        timings.Remove(timing);
+                        Debug.Log("speed: " + speed);
+                    }
 					else
 					{
                         Debug.Log("Timing Data Type Error");

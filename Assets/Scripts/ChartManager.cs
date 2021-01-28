@@ -44,14 +44,14 @@ public class ChartManager : MonoBehaviour
 				Match match = Regex.Match(str, @"(?<=^bpm)\s*:\s*(\d+\.?\d+|\d)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*}(?=\s*$)", options);
 				float bpm = float.Parse(match.Groups[1].Value);
 				float beat = float.Parse(match.Groups[2].Value);
-				timings.Add(new BpmData(beat, bpm));
+				timings.Add(new TimingData(TimingData.TYPE.bpm, beat, bpm));
 			}
 			else if (str.Contains("speed"))
 			{
 				Match match = Regex.Match(str, @"(?<=^speed)\s*:\s*(\d+\.?\d+|\d)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*}(?=\s*$)", options);
 				float speed = float.Parse(match.Groups[1].Value);
 				float beat = float.Parse(match.Groups[2].Value);
-				timings.Add(new BpmData(beat, speed));
+				timings.Add(new TimingData(TimingData.TYPE.speed, beat, speed));
 			}
 			else
 			{
