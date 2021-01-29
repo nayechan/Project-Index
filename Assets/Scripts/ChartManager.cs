@@ -8,8 +8,8 @@ public class ChartManager : MonoBehaviour
 {
 	private string version, title, artist;
 	private float bpm, offset;
-	private List<TimingData> bpms = new List<TimingData>();
-	private List<TimingData> speeds = new List<TimingData>();
+	private List<TimingData> bpmData = new List<TimingData>();
+	private List<TimingData> speedData = new List<TimingData>();
 	private List<NoteData> notes = new List<NoteData>();
 
 	[SerializeField] NoteManager noteManager;
@@ -39,8 +39,8 @@ public class ChartManager : MonoBehaviour
 		Debug.Log(noteData);
 
 		// bpm과 speed 초깃값을 bpms, speeds 리스트의 첫 요소로 넣어 준다.
-		bpms.Add(new TimingData(0.0f, bpm));
-		speeds.Add(new TimingData(1.0f, bpm));
+		bpmData.Add(new TimingData(0.0f, bpm));
+		speedData.Add(new TimingData(1.0f, bpm));
 
 		foreach (string str in timingData.Split('\n'))
 		{
@@ -49,14 +49,14 @@ public class ChartManager : MonoBehaviour
 				Match match = Regex.Match(str, @"(?<=^bpm)\s*:\s*(\d+\.?\d+|\d)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*}(?=\s*$)", options);
 				float bpm = float.Parse(match.Groups[1].Value);
 				float beat = float.Parse(match.Groups[2].Value);
-				bpms.Add(new TimingData(beat, bpm));
+				bpmData.Add(new TimingData(beat, bpm));
 			}
 			else if (str.Contains("speed"))
 			{
 				Match match = Regex.Match(str, @"(?<=^speed)\s*:\s*(\d+\.?\d+|\d)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*}(?=\s*$)", options);
 				float speed = float.Parse(match.Groups[1].Value);
 				float beat = float.Parse(match.Groups[2].Value);
-				speeds.Add(new TimingData(beat, speed));
+				speedData.Add(new TimingData(beat, speed));
 			}
 			else
 			{
@@ -77,8 +77,8 @@ public class ChartManager : MonoBehaviour
 		noteManager.SetArtist(artist);
 		noteManager.SetBpm(bpm);
 		noteManager.SetOffset(offset);
-		noteManager.SetBpms(bpms);
-		noteManager.SetSpeeds(speeds);
+		noteManager.SetBpmData(bpmData);
+		noteManager.SetSpeedData(speedData);
 
 		noteManager.SortNoteData();
 	}

@@ -8,5 +8,6 @@
 	{
 		this.beat = beat;
 		this.value = value;
+		this.second = -1.0f;
 	}
 }

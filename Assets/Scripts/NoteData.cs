@@ -5,11 +5,13 @@ using UnityEngine;
 public class NoteData
 {
 	public float beat;
+	public float second;
 	public int key;
 
 	public NoteData(float beat, int key)
 	{
 		this.beat = beat;
 		this.key = key;
+		this.second = -1.0f;
 	}
 }

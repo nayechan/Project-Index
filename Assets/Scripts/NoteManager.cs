@@ -12,15 +12,9 @@ public class NoteManager : MonoBehaviour
     [SerializeField] private GameObject     normalNote, longNote;
 
     private List<GameObject>    createdNotes;
-    private List<NoteData>      notes;
-    private List<TimingData>    bpms;
-    private List<TimingData>    speeds;
-
-    // note, bpm, speed 정보를 비트 수가 아니라 초 단위로 변환하여 저장.
-    // key가 sec, value가 노트 번호, 바뀌는 bpm과 speed 값.
-    private List<KeyValuePair<float, int>> noteSecs;
-    private List<KeyValuePair<float, float>> bpmSecs;
-    private List<KeyValuePair<float, float>> speedSecs;
+    private List<NoteData>      noteData;
+    private List<TimingData>    bpmData;
+    private List<TimingData>    speedData;
 
     private float hp = 100;
     private float bpm, offset, speed = 1.0f;
@@ -51,32 +45,33 @@ public class NoteManager : MonoBehaviour
 		{
             start = true;
 
-            // beat, speed가 바뀌거나 note가 놓이는 시간이 key
-            bpmSecs     = new List<KeyValuePair<float, float>>();
-            speedSecs   = new List<KeyValuePair<float, float>>();
-            noteSecs    = new List<KeyValuePair<float, int>>();
-
-            // chart manager에게서 받은 #info의 bpm, speed를 0초에 기본값으로 추가.
-            bpmSecs.Add(new KeyValuePair<float, float>(0, bpm));
-            speedSecs.Add(new KeyValuePair<float, float>(0, speed));
-
+            bpmData[0].second = 0;
+            speedData[0].second = 0;
 
             // 시간을 알려면 비트를 시간으로 바꾸어야 하니까 bpmSecs를 먼저 구한다.
             // 기본값을 주었으니 인덱스가 1부터 시작.
-            for (int i = 1; i < bpms.Count; ++i)
+            for (int i = 1; i < bpmData.Count; ++i)
 			{
                 // 지금 bpm이 바뀌는 시간은, 직전에 bpm이 바뀐 시간 + 그때와의 beat 차이 * 60 / 직전에 바꾼 bpm
-                bpmSecs.Add(new KeyValuePair<float, float>
-                    (bpmSecs[i - 1].Key + (bpms[i].beat - bpms[i - 1].beat) * 60 / bpmSecs[i - 1].Value, bpms[i].value));
+                bpmData[i].second = bpmData[i - 1].second + (bpmData[i].beat - bpmData[i - 1].beat) * 60 / bpmData[i - 1].value;
             }
             
-            for (int i = 1; i < speeds.Count; ++i)
+            for (int i = 1; i < speedData.Count; ++i)
 			{
                 // bpm과 speed가 동시에 수정되는 상황은 고려하지 않음!
-                speedSecs.Add(new KeyValuePair<float, float>
-                    (BeatToSecs(speeds[i].beat), speeds[i].value));
+                speedData[i].second = BeatToSec(speedData[i].beat);
 			}
-            
+
+            foreach (TimingData p in bpmData)
+			{
+                Debug.Log("bpm: " + p.second + " " + p.value);
+			}
+
+            foreach (TimingData p in speedData)
+            {
+                Debug.Log("speed: " + p.second + " " + p.value);
+            }
+
             Debug.Log("Game Start!");
 
             startTime = Time.time;
@@ -88,7 +83,7 @@ public class NoteManager : MonoBehaviour
             float beat = (Time.time - startTime) / interval;    // 현재 beat
 
             // note가 beat 오름차순으로 정렬되었다고 가정.
-            foreach (NoteData note in notes.ToList())
+            foreach (NoteData note in noteData.ToList())
 			{
                 if (note.beat < beat + 1.0f)
                 {
@@ -98,7 +93,7 @@ public class NoteManager : MonoBehaviour
                     g.GetComponent<NoteController>().SetNoteManager(this);
                     g.GetComponent<NoteController>().SetNoteData(note);
 
-                    notes.Remove(note);
+                    noteData.Remove(note);
                 }
 				else
 				{
@@ -112,7 +107,7 @@ public class NoteManager : MonoBehaviour
     public void SortNoteData()
     {
         string debugLog = "";
-        foreach(NoteData noteData in notes)
+        foreach(NoteData noteData in noteData)
         {
             debugLog += noteData.beat.ToString();
             debugLog += ' ';
@@ -124,9 +119,9 @@ public class NoteManager : MonoBehaviour
 
     public List<NoteData> GetNoteListInstance()
     {
-        if (notes == null)
-            notes = new List<NoteData>();
-        return notes;
+        if (noteData == null)
+            noteData = new List<NoteData>();
+        return noteData;
     }
 
     public void SetVersion(string version)
@@ -154,14 +149,14 @@ public class NoteManager : MonoBehaviour
         this.offset = offset;
 	}
     
-    public void SetBpms(List<TimingData> timings)
+    public void SetBpmData(List<TimingData> timings)
 	{
-        this.bpms = timings;
+        this.bpmData = timings;
 	}
 
-    public void SetSpeeds(List<TimingData> timings)
+    public void SetSpeedData(List<TimingData> timings)
 	{
-        this.speeds = timings;
+        this.speedData = timings;
 	}
 
     public void AddNote(NoteData noteData)
@@ -174,17 +169,17 @@ public class NoteManager : MonoBehaviour
         return speed;
     }
 
-	float BeatToSecs(float beat)
+	float BeatToSec(float beat)
 	{
-        int left = 0, right = bpms.Count - 1, mid = (left + right) / 2;
+        int left = 0, right = bpmData.Count - 1, mid = (left + right) / 2;
         while (left <= right)
 		{
             mid = (left + right) / 2;
-            if (bpms[mid].beat == beat)
+            if (bpmData[mid].beat == beat)
 			{
                 break;
 			}
-            if (bpms[mid].beat < beat)
+            if (bpmData[mid].beat < beat)
 			{
                 left = mid + 1;
 			}
@@ -195,14 +190,16 @@ public class NoteManager : MonoBehaviour
         }
 
         // 이진 탐색 성공
-        if (bpms[mid].beat == beat)
+        // 찾는 beat 수의 second 정보가 bpmData에 저장되어 있음.
+        if (left <= right)
 		{
-            return bpmSecs[mid].Key;
+            return bpmData[mid].second;
 		}
-        // 이진 탐색 실패(right가 직전에 변경된 bpm 인덱스를 들고 있음)
-		else
-		{
-            return bpmSecs[right].Key + (beat - bpms[right].beat) * 60 / bpmSecs[right].Value;
+        // 이진 탐색 실패
+        // right가 직전에 변경된 bpm 인덱스를 들고 있음! 그때의 시간과 beat 차이, bpm을 이용해서 시간을 계산.
+        else
+        {
+            return bpmData[right].second + (beat - bpmData[right].beat) * 60 / bpmData[right].value;
 		}
 	}
 
