@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class NoteData
+﻿public class NoteData
 {
 	public float beat;
-	public float second;
+	public float startSecond;	// 노트가 생성되는 시간.
+	public float second;		// 노트가 판정선에 도달하는 시간.
 	public int key;
 
 	public NoteData(float beat, int key)
@@ -13,5 +10,6 @@ public class NoteData
 		this.beat = beat;
 		this.key = key;
 		this.second = -1.0f;
+		this.startSecond = -1.0f;
 	}
 }

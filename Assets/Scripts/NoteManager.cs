@@ -29,6 +29,8 @@ public class NoteManager : MonoBehaviour
 
     private string version, title, artist;
 
+    private float mapZ = 7.3f;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -62,15 +64,31 @@ public class NoteManager : MonoBehaviour
                 speedData[i].second = BeatToSec(speedData[i].beat);
 			}
 
-            foreach (TimingData p in bpmData)
+            foreach (NoteData note in noteData)
 			{
-                Debug.Log("bpm: " + p.second + " " + p.value);
+                note.second = BeatToSec(note.beat);
+                note.startSecond = -1.0f;   // 이걸 구하는 게 목표.
 			}
 
-            foreach (TimingData p in speedData)
+            string bpmLog = "bpmLog\n", speedLog = "speedLog\n", noteLog = "noteLog\n";
+
+            foreach (TimingData d in bpmData)
+			{
+                bpmLog += "bpm: " + d.second + " " + d.value + "\n";
+			}
+
+            foreach (TimingData d in speedData)
             {
-                Debug.Log("speed: " + p.second + " " + p.value);
+                speedLog += "speed: " + d.second + " " + d.value + "\n";
             }
+
+            foreach (NoteData note in noteData)
+			{
+                noteLog += "note: " + note.second + " " + note.key + "\n";
+			}
+            Debug.Log(bpmLog);
+            Debug.Log(speedLog);
+            Debug.Log(noteLog);
 
             Debug.Log("Game Start!");
 
@@ -106,7 +124,7 @@ public class NoteManager : MonoBehaviour
 
     public void SortNoteData()
     {
-        string debugLog = "";
+        string debugLog = "sort note\n";
         foreach(NoteData noteData in noteData)
         {
             debugLog += noteData.beat.ToString();
@@ -203,7 +221,7 @@ public class NoteManager : MonoBehaviour
 		}
 	}
 
-    private bool AlmostEqual(float a, float b)
+    private bool IsAlmostEqual(float a, float b)
 	{
         return Mathf.Abs(a - b) < 0.0001;
 	}

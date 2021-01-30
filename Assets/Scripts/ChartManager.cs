@@ -40,7 +40,7 @@ public class ChartManager : MonoBehaviour
 
 		// bpm과 speed 초깃값을 bpms, speeds 리스트의 첫 요소로 넣어 준다.
 		bpmData.Add(new TimingData(0.0f, bpm));
-		speedData.Add(new TimingData(1.0f, bpm));
+		speedData.Add(new TimingData(0.0f, 1.0f));
 
 		foreach (string str in timingData.Split('\n'))
 		{
