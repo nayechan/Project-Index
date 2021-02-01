@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,20 +17,20 @@ public class NoteManager : MonoBehaviour
     private List<TimingData>    bpmData;
     private List<TimingData>    speedData;
 
-    private float hp = 100;
+    // private float hp = 100;
     private float bpm, offset, speed = 1.0f;
     private float startTime;
 
-    private int score = 0;
-    private int processedNotes = 0;
-    private int combo = 0;
-    private int ncount = 0;
+    // private int score = 0;
+    // private int processedNotes = 0;
+    // private int combo = 0;
+    // private int ncount = 0;
 
     private bool start = false;
 
     private string version, title, artist;
 
-    private float mapZ = 7.3f;
+    private float mapZ = 8.0f;
 
     // Start is called before the first frame update
     private void Start()
@@ -37,7 +38,6 @@ public class NoteManager : MonoBehaviour
         createdNotes    = new List<GameObject>();
         Debug.Log("Press Space to Start");
         // StartCoroutine("createNote");
-
     }
 
     // Update is called once per frame
@@ -48,27 +48,43 @@ public class NoteManager : MonoBehaviour
             start = true;
 
             bpmData[0].second = 0;
-            speedData[0].second = 0;
-
-            // 시간을 알려면 비트를 시간으로 바꾸어야 하니까 bpmSecs를 먼저 구한다.
-            // 기본값을 주었으니 인덱스가 1부터 시작.
             for (int i = 1; i < bpmData.Count; ++i)
 			{
                 // 지금 bpm이 바뀌는 시간은, 직전에 bpm이 바뀐 시간 + 그때와의 beat 차이 * 60 / 직전에 바꾼 bpm
                 bpmData[i].second = bpmData[i - 1].second + (bpmData[i].beat - bpmData[i - 1].beat) * 60 / bpmData[i - 1].value;
             }
-            
+
+            speedData[0].second = BeatToSec(speedData[0].beat);
             for (int i = 1; i < speedData.Count; ++i)
 			{
-                // bpm과 speed가 동시에 수정되는 상황은 고려하지 않음!
                 speedData[i].second = BeatToSec(speedData[i].beat);
 			}
 
             foreach (NoteData note in noteData)
 			{
                 note.second = BeatToSec(note.beat);
-                note.startSecond = -1.0f;   // 이걸 구하는 게 목표.
-			}
+
+                float distanceSum = 0, timeSum = 0;
+                while (true)
+				{
+                    TimingData lastSpeedTiming = GetLastSpeed(note.second - timeSum);
+                    // 변속이 바뀌기 전까지 움직이는 거리
+                    float nextDistance = (note.second - lastSpeedTiming.second) * lastSpeedTiming.value * 10.0f;
+
+                    // 이 속도 구간에서 맵 끝에 도달할 수 있으면
+                    if (distanceSum + nextDistance >= mapZ)
+					{
+                        // 남은 거리 / 속도만큼 시간 추가하고 루프 종료.
+                        timeSum += (mapZ - distanceSum) / (lastSpeedTiming.value * 10.0f);
+                        note.startSecond = note.second - timeSum;
+                        break;
+					}
+
+                    // 이 변속 구간에서 맵 끝에 도달하지 못하면
+                    distanceSum += nextDistance;
+                    timeSum += note.second - lastSpeedTiming.second ;
+				}
+            }
 
             string bpmLog = "bpmLog\n", speedLog = "speedLog\n", noteLog = "noteLog\n";
 
@@ -84,8 +100,9 @@ public class NoteManager : MonoBehaviour
 
             foreach (NoteData note in noteData)
 			{
-                noteLog += "note: " + note.second + " " + note.key + "\n";
+                noteLog += "note: " + note.startSecond +" " + note.second + " " + note.key + "\n";
 			}
+
             Debug.Log(bpmLog);
             Debug.Log(speedLog);
             Debug.Log(noteLog);
@@ -106,7 +123,7 @@ public class NoteManager : MonoBehaviour
                 if (note.beat < beat + 1.0f)
                 {
                     
-                    GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, 7.3f),
+                    GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ),
                     Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
                     g.GetComponent<NoteController>().SetNoteManager(this);
                     g.GetComponent<NoteController>().SetNoteData(note);
@@ -122,7 +139,7 @@ public class NoteManager : MonoBehaviour
         }
     }
 
-    public void SortNoteData()
+	public void SortNoteData()
     {
         string debugLog = "sort note\n";
         foreach(NoteData noteData in noteData)
@@ -187,17 +204,20 @@ public class NoteManager : MonoBehaviour
         return speed;
     }
 
-	float BeatToSec(float beat)
+	public float BeatToSec(float beat)
 	{
         int left = 0, right = bpmData.Count - 1, mid = (left + right) / 2;
         while (left <= right)
 		{
             mid = (left + right) / 2;
-            if (bpmData[mid].beat == beat)
+
+            // 이진 탐색 성공
+            // 찾는 beat 수의 second 정보가 bpmData에 저장되어 있음.
+            if (IsAlmostEqual(beat, bpmData[mid].beat))
 			{
-                break;
-			}
-            if (bpmData[mid].beat < beat)
+                return bpmData[mid].second;
+            }
+            if (beat > bpmData[mid].beat)
 			{
                 left = mid + 1;
 			}
@@ -207,19 +227,39 @@ public class NoteManager : MonoBehaviour
 			}
         }
 
-        // 이진 탐색 성공
-        // 찾는 beat 수의 second 정보가 bpmData에 저장되어 있음.
-        if (left <= right)
-		{
-            return bpmData[mid].second;
-		}
-        // 이진 탐색 실패
-        // right가 직전에 변경된 bpm 인덱스를 들고 있음! 그때의 시간과 beat 차이, bpm을 이용해서 시간을 계산.
-        else
+        // 첫 bpmData(0)보다 빠른 beat가 들어올 때 예외 처리.
+        if (right == -1)
         {
-            return bpmData[right].second + (beat - bpmData[right].beat) * 60 / bpmData[right].value;
-		}
+            right = 0;
+        }
+        return bpmData[right].second + (beat - bpmData[right].beat) * 60 / bpmData[right].value;
 	}
+
+    private TimingData GetLastSpeed(float second)
+	{
+        int left = 0, right = speedData.Count - 1, mid = (left + right) / 2;
+        while (left <= right)
+        {
+            mid = (left + right) / 2;
+
+            if (IsAlmostEqual(second, speedData[mid].second))
+            {
+                // 반대 방향이기 때문에 mid가 아니라 mid 직전의 speedData를 구해야 함.
+                return speedData[mid - 1];
+            }
+            if (second > speedData[mid].second)
+            {
+                left = mid + 1;
+            }
+            else
+            {
+                right = mid - 1;
+            }
+        }
+
+        // speedData[0].second(-1.0e8f)와 같거나 이보다 작은 값이 들어올 수도 있지만 터무니없는 이야기다. 예외 처리 필요 없음.
+        return speedData[right];
+    }
 
     private bool IsAlmostEqual(float a, float b)
 	{
