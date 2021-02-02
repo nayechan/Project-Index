@@ -256,6 +256,7 @@ public class NoteManager : MonoBehaviour
             }
         }
 
+		// speedData[0].value를 float.minValue로 초기화해서 에러 처리 필요 없음.
         return speedData[right];
     }
 
