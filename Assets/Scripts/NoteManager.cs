@@ -37,6 +37,7 @@ public class NoteManager : MonoBehaviour
     {
         createdNotes    = new List<GameObject>();
         Debug.Log("Press Space to Start");
+        // StartCoroutine("createNote");
     }
 
     // Update is called once per frame
@@ -67,7 +68,7 @@ public class NoteManager : MonoBehaviour
                 while (true)
 				{
                     TimingData lastSpeedTiming = GetLastSpeed(note.second - timeSum);
-                    // 변속하기 전까지 움직일 수 있는 거리
+                    // 변속이 바뀌기 전까지 움직이는 거리
                     float nextDistance = (note.second - lastSpeedTiming.second) * lastSpeedTiming.value * 10.0f;
 
                     // 이 속도 구간에서 맵 끝에 도달할 수 있으면
@@ -256,6 +257,7 @@ public class NoteManager : MonoBehaviour
             }
         }
 
+        // speedData[0].second(-1.0e8f)와 같거나 이보다 작은 값이 들어올 수도 있지만 터무니없는 이야기다. 예외 처리 필요 없음.
         return speedData[right];
     }
 
