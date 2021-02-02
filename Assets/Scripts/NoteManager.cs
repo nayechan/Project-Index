@@ -37,7 +37,6 @@ public class NoteManager : MonoBehaviour
     {
         createdNotes    = new List<GameObject>();
         Debug.Log("Press Space to Start");
-        // StartCoroutine("createNote");
     }
 
     // Update is called once per frame
@@ -257,7 +256,6 @@ public class NoteManager : MonoBehaviour
             }
         }
 
-        // speedData[0].second(-1.0e8f)와 같거나 이보다 작은 값이 들어올 수도 있지만 터무니없는 이야기다. 예외 처리 필요 없음.
         return speedData[right];
     }
 
