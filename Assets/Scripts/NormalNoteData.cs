@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class NormalNoteData : NoteData
 {
-    NormalNoteData(float beat, int key):base(beat,key)
-    {
+	NormalNoteData(float beat, int key):base(beat,key)
+	{
 
-    }
+	}
 }
