@@ -108,25 +108,28 @@ public class NoteManager : MonoBehaviour
 
 			Debug.Log("Game Start!");
 
-			startTime = Time.time;
+			// 게임은 2초부터 시작한다. 노트가 음수 시간에 생성되는 경우에는 그 시간만큼 더 먼저 시작한다.
+			startTime = Time.time + 2.0f;
+			if (noteData[0].startSecond < 0)
+			{
+				startTime -= noteData[0].startSecond;
+			}
 		}
 
 		if (start)
 		{
-			float interval = 60 / bpm;							// beat당 시간 간격(초)
-			float beat = (Time.time - startTime) / interval;	// 현재 beat
+			float currentTime = Time.time - startTime;
 
-			// note가 beat 오름차순으로 정렬되었다고 가정.
 			foreach (NoteData note in noteData.ToList())
 			{
-				if (note.beat < beat + 1.0f)
+				if (currentTime > note.startSecond)
 				{
-					
 					GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ),
 					Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
 					g.GetComponent<NoteController>().SetNoteManager(this);
 					g.GetComponent<NoteController>().SetNoteData(note);
 
+					Debug.Log(currentTime + " " + note.startSecond);
 					noteData.Remove(note);
 				}
 				else
@@ -135,6 +138,13 @@ public class NoteManager : MonoBehaviour
 				}
 			}
 
+			foreach (TimingData d in speedData)
+			{
+				if (currentTime < d.second)
+				{
+					speed = d.value;
+				}
+			}
 		}
 	}
 
