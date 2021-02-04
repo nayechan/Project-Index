@@ -120,30 +120,28 @@ public class NoteManager : MonoBehaviour
 		{
 			float currentTime = Time.time - startTime;
 
-			foreach (NoteData note in noteData.ToList())
-			{
-				if (currentTime >= note.startSecond)
-				{
-					GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ),
-					Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
-					g.GetComponent<NoteController>().SetNoteManager(this);
-					g.GetComponent<NoteController>().SetNoteData(note);
-
-					Debug.Log(currentTime + " " + note.startSecond + " " + (currentTime - note.startSecond));
-					noteData.Remove(note);
-				}
-				else
-				{
-					break;
-				}
-			}
-
 			foreach (TimingData d in speedData)
 			{
 				if (currentTime >= d.second)
 				{
 					speed = d.value;
-					Debug.Log("speed: " + speed);
+				}
+			}
+
+			foreach (NoteData note in noteData.ToList())
+			{
+				if (currentTime >= note.startSecond)
+				{
+					GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ - (currentTime - note.startSecond) * speed * 10.0f),
+					Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
+					g.GetComponent<NoteController>().SetNoteManager(this);
+					g.GetComponent<NoteController>().SetNoteData(note);
+
+					noteData.Remove(note);
+				}
+				else
+				{
+					break;
 				}
 			}
 		}
