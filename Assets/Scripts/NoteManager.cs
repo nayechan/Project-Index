@@ -12,14 +12,13 @@ public class NoteManager : MonoBehaviour
 	[SerializeField] private NoteController	noteController;
 	[SerializeField] private GameObject		normalNote, longNote;
 
-	private List<GameObject>	createdNotes;
 	private List<NoteData>		noteData;
 	private List<TimingData>	bpmData;
 	private List<TimingData>	speedData;
 
 	// private float hp = 100;
 	private float bpm, offset, speed = 1.0f;
-	private float startTime;
+	public float startTime;	// 임시로 public
 
 	// private int score = 0;
 	// private int processedNotes = 0;
@@ -35,7 +34,6 @@ public class NoteManager : MonoBehaviour
 	// Start is called before the first frame update
 	private void Start()
 	{
-		createdNotes	= new List<GameObject>();
 		Debug.Log("Press Space to Start");
 	}
 
@@ -144,6 +142,7 @@ public class NoteManager : MonoBehaviour
 					break;
 				}
 			}
+
 		}
 	}
 

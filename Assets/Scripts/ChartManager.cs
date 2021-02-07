@@ -38,7 +38,7 @@ public class ChartManager : MonoBehaviour
 		Debug.Log(timingData);
 		Debug.Log(noteData);
 
-		// bpm과 speed 초깃값을 bpms, speeds 리스트의 첫 요소로 넣어 준다.
+		// bpm과 speed 초깃값을 bpmData, speedData 리스트의 첫 요소로 넣어 준다.
 		bpmData.Add(new TimingData(0.0f, bpm));
 		speedData.Add(new TimingData(float.MinValue, 1.0f));
 
