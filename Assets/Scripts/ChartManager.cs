@@ -64,12 +64,22 @@ public class ChartManager : MonoBehaviour
 			}
 		}
 
+		// 예외 처리용으로 speedData에 마지막 값 추가.
+		speedData.Add(new TimingData(float.MaxValue, -1));
+
 		foreach (string str in noteData.Split('\n'))
 		{
-			Match match = Regex.Match(str, @"(?<=^normalnote)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*,\s*key\s*:\s*(\d+)\s*}(?=\s*$)", options);
-			float beat = float.Parse(match.Groups[1].Value);
-			int key = int.Parse(match.Groups[2].Value);
-			noteManager.AddNote(new NoteData(beat, key));
+			if (str.Contains("normalnote"))
+			{
+				Match match = Regex.Match(str, @"(?<=^normalnote)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*,\s*key\s*:\s*(\d+)\s*}(?=\s*$)", options);
+				float beat = float.Parse(match.Groups[1].Value);
+				int key = int.Parse(match.Groups[2].Value);
+				noteManager.AddNote(new NoteData(beat, key));
+			}
+			else if (str.Contains("longnote"))
+			{
+				// Match match = Regex.Match(str, @"(?<=^longnote)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*,\s*key\s*:\s*(\d+)\s*}(?=\s*$)", options);
+			}
 		}
 
 		noteManager.SetVersion(version);

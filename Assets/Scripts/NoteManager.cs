@@ -60,27 +60,10 @@ public class NoteManager : MonoBehaviour
 			foreach (NoteData note in noteData)
 			{
 				note.second = BeatToSec(note.beat);
+				note.startSecond = GetStartSecond(note.second);
 
-				float distanceSum = 0, timeSum = 0;
-				while (true)
-				{
-					TimingData lastSpeedTiming = GetLastSpeed(note.second - timeSum);
-					// 변속이 바뀌기 전까지 움직이는 거리
-					float nextDistance = (note.second - lastSpeedTiming.second) * lastSpeedTiming.value * 10.0f;
-
-					// 이 속도 구간에서 맵 끝에 도달할 수 있으면
-					if (distanceSum + nextDistance >= mapZ)
-					{
-						// 남은 거리 / 속도만큼 시간 추가하고 루프 종료.
-						timeSum += (mapZ - distanceSum) / (lastSpeedTiming.value * 10.0f);
-						note.startSecond = note.second - timeSum;
-						break;
-					}
-
-					// 이 변속 구간에서 맵 끝에 도달하지 못하면
-					distanceSum += nextDistance;
-					timeSum += note.second - lastSpeedTiming.second ;
-				}
+				// if note.type == LongNote
+				
 			}
 
 			string bpmLog = "bpmLog\n", speedLog = "speedLog\n", noteLog = "noteLog\n";
@@ -242,7 +225,8 @@ public class NoteManager : MonoBehaviour
 		return bpmData[right].second + (beat - bpmData[right].beat) * 60 / bpmData[right].value;
 	}
 
-	private TimingData GetLastSpeed(float second)
+	// dir은 양이나 음의 정수로 방향을 표시함.
+	private int GetLastSpeed(float second, int dir)
 	{
 		int left = 0, right = speedData.Count - 1, mid = (left + right) / 2;
 		while (left <= right)
@@ -251,8 +235,12 @@ public class NoteManager : MonoBehaviour
 
 			if (IsAlmostEqual(second, speedData[mid].second))
 			{
-				// 반대 방향이기 때문에 mid가 아니라 mid 직전의 speedData를 구해야 함.
-				return speedData[mid - 1];
+				// dir이 음수면 mid - 1, dir이 양수면 mid
+				if (dir < 0)
+				{
+					--mid;
+				}
+				return mid;
 			}
 			if (second > speedData[mid].second)
 			{
@@ -265,7 +253,56 @@ public class NoteManager : MonoBehaviour
 		}
 
 		// speedData[0].value를 float.minValue로 초기화해서 에러 처리 필요 없음.
-		return speedData[right];
+		return right;
+	}
+
+	private float GetNoteLength(float startSecond, float endSecond)
+	{
+		int last = GetLastSpeed(startSecond, 1);
+		float distanceSum = 0;
+		int cnt = 0;
+		while (true)
+		{
+			// 다음 변속 전에 노트가 끝나면
+			if (endSecond <= speedData[last + 1].second)
+			{
+				distanceSum += (endSecond - speedData[last].second) * speedData[last].value * 10.0f;
+				return distanceSum;
+			}
+
+			distanceSum += (speedData[last + 1].second - startSecond) * speedData[last].value * 10.0f;
+			startSecond = speedData[last + 1].second;
+			++last;
+			if (++cnt < 100)
+			{
+				Debug.Log("INFINITE LOOP");
+				return 0;
+			}
+		}
+	}
+
+	private float GetStartSecond(float second)
+	{
+		int last = GetLastSpeed(second, -1);
+		float distanceSum = 0, timeSum = 0;
+		while (true)
+		{
+			// 변속이 바뀌기 전까지 움직이는 거리
+			float nextDistance = (second - speedData[last].second) * speedData[last].value * 10.0f;
+
+			// 이 속도 구간에서 맵 끝에 도달할 수 있으면
+			if (distanceSum + nextDistance >= mapZ)
+			{
+				// 남은 거리 / 속도만큼 시간 추가하고 루프 종료.
+				timeSum += (mapZ - distanceSum) / (speedData[last].value * 10.0f);
+				return second - timeSum;
+			}
+
+			// 이 변속 구간에서 맵 끝에 도달하지 못하면
+			distanceSum += nextDistance;
+			timeSum += second - speedData[last].second ;
+			--last;
+		}
 	}
 
 	private bool IsAlmostEqual(float a, float b)
