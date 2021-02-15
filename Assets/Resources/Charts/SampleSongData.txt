@@ -13,15 +13,14 @@ speed : 1.5 { beat : 6 }
 speed : 0.5 { beat : 15 }
 
 #notedata
-normalnote{beat:1,key :4}
-normalnote{ beat:5,key:1}
-normalnote{beat :10,key:3}
-normalnote{beat: 12,key:1}
-normalnote{beat:12 ,key:2}
-normalnote{beat:14, key:3}
-normalnote{beat:18,key: 2}
-normalnote{beat:20,key:4 }
-normalnote{ beat:21,key:1}    
-normalnote {beat: 24.1 ,key:1}
-normalnote{ beat:25.51231,key:1}
-normalnote{ beat:26,key:1}
+normalnote{beat:0,key:1}
+longnote{beat:0,endbeat:1,key:2}
+normalnote{beat:1,key:3}
+longnote{beat:2,endbeat:3,key:1}
+longnote{beat:2,endbeat:4,key:2}
+longnote{beat:2,endbeat:5,key:3}
+longnote{beat:2,endbeat:6,key:4}
+longnote{beat:4,endbeat:8,key:1}
+longnote{beat:5,endbeat:8,key:2}
+longnote{beat:6,endbeat:8,key:3}
+longnote{beat:7,endbeat:8,key:4}
