@@ -1136,6 +1136,7 @@ MonoBehaviour:
     type: 3}
   longNote: {fileID: 6271453458295196869, guid: fc110bf5a98b47547a172d264228baa7,
     type: 3}
+  userSpeed: 0.1
   startTime: 0
 --- !u!4 &2039872310
 Transform:

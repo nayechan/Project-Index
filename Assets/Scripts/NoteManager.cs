@@ -16,6 +16,10 @@ public class NoteManager : MonoBehaviour
 	private List<TimingData>	bpmData;
 	private List<TimingData>	speedData;
 
+
+	//사용자 지정 속도
+	[SerializeField] private float userSpeed;
+
 	// private float hp = 100;
 	private float bpm, offset, speed = 1.0f;
 	public float startTime;	// 임시로 public
@@ -119,16 +123,47 @@ public class NoteManager : MonoBehaviour
 				{
 					if (note.GetType().Equals(typeof(NormalNoteData)))
 					{
-						GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ - (currentTime - note.startSecond) * speed * 10.0f),
-Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
+						GameObject g = Instantiate(
+							normalNote, 
+							new Vector3(
+								-1.0f + 0.4f * note.key, 
+								-0.999f, 
+								mapZ - (currentTime - note.startSecond) * speed * userSpeed * 10.0f
+								),
+							Quaternion.Euler(
+								new Vector3(
+									90.0f, 
+									0.0f, 
+									0.0f
+									)
+								)
+							);
 						g.GetComponent<NoteController>().SetNoteManager(this);
 						g.GetComponent<NoteController>().SetNoteData(note);
 					}
 					else if (note.GetType().Equals(typeof(LongNoteData)))
 					{
 						LongNoteData n = note as LongNoteData;
-						GameObject g = Instantiate(longNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ - (currentTime - note.startSecond) * speed * 10.0f), Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
-						g.transform.localScale += new Vector3(0, GetNoteLength(n), 0);
+						GameObject g = Instantiate(
+							longNote, 
+							new Vector3(
+								-1.0f + 0.4f * note.key,
+								-0.999f,
+								mapZ - (currentTime - note.startSecond) * speed * userSpeed * 10.0f
+								), 
+							Quaternion.Euler(
+								new Vector3(
+									90.0f, 
+									0.0f, 
+									0.0f
+									)
+								)
+							);
+
+						Vector3 noteScale = g.transform.localScale;
+						noteScale.y *= GetNoteLength(n);
+						g.transform.localScale = noteScale;
+
 						if (g != null)
 						{
 							g.GetComponent<NoteController>().SetNoteData(note);
@@ -209,7 +244,7 @@ Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
 
 	public float GetSpeed()
 	{
-		return speed;
+		return speed * userSpeed;
 	}
 
 	public float BeatToSec(float beat)
@@ -285,11 +320,11 @@ Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
 			// 다음 변속 전에 노트가 끝나면
 			if (endSecond <= speedData[last + 1].second)
 			{
-				distanceSum += (endSecond - startSecond) * speedData[last].value * 10.0f;
+				distanceSum += (endSecond - startSecond) * speedData[last].value * 10.0f * userSpeed;
 				return distanceSum;
 			}
 
-			distanceSum += (speedData[last + 1].second - startSecond) * speedData[last].value * 10.0f;
+			distanceSum += (speedData[last + 1].second - startSecond) * speedData[last].value * 10.0f * userSpeed;
 			startSecond = speedData[last + 1].second;
 			++last;
 			if (++cnt > 100)
@@ -307,13 +342,13 @@ Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
 		while (true)
 		{
 			// 변속이 바뀌기 전까지 움직이는 거리
-			float nextDistance = (second - speedData[last].second) * speedData[last].value * 10.0f;
+			float nextDistance = (second - speedData[last].second) * speedData[last].value * 10.0f * userSpeed;
 
 			// 이 속도 구간에서 맵 끝에 도달할 수 있으면
 			if (distanceSum + nextDistance >= mapZ)
 			{
-				// 남은 거리 / 속도만큼 시간 추가하고 루프 종료.
-				timeSum += (mapZ - distanceSum) / (speedData[last].value * 10.0f);
+                // 남은 거리 / 속도만큼 시간 추가하고 루프 종료.
+                timeSum += (mapZ - distanceSum) / (speedData[last].value * 10.0f * userSpeed);
 				return second - timeSum;
 			}
 
