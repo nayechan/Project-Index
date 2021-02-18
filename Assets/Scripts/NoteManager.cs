@@ -9,7 +9,7 @@ public class NoteManager : MonoBehaviour
 {
 	//필요한 프리팹
 	[SerializeField] private GameObject		scoreDisplay, hpDisplay, comboDisplay;
-	[SerializeField] private NoteController	noteController;
+	// [SerializeField] private NoteController	noteController;
 	[SerializeField] private GameObject		normalNote, longNote;
 
 	private List<NoteData>		noteData;
@@ -62,8 +62,12 @@ public class NoteManager : MonoBehaviour
 				note.second = BeatToSec(note.beat);
 				note.startSecond = GetStartSecond(note.second);
 
-				// if note.type == LongNote
-				
+				if (note.GetType().Equals(typeof(LongNoteData)))
+				{
+					LongNoteData n = note as LongNoteData;
+					n.endSecond = BeatToSec(n.endBeat);
+					n.length = GetNoteLength(n);
+				}
 			}
 
 			string bpmLog = "bpmLog\n", speedLog = "speedLog\n", noteLog = "noteLog\n";
@@ -113,10 +117,24 @@ public class NoteManager : MonoBehaviour
 			{
 				if (currentTime >= note.startSecond)
 				{
-					GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ - (currentTime - note.startSecond) * speed * 10.0f),
-					Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
-					g.GetComponent<NoteController>().SetNoteManager(this);
-					g.GetComponent<NoteController>().SetNoteData(note);
+					if (note.GetType().Equals(typeof(NormalNoteData)))
+					{
+						GameObject g = Instantiate(normalNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ - (currentTime - note.startSecond) * speed * 10.0f),
+Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
+						g.GetComponent<NoteController>().SetNoteManager(this);
+						g.GetComponent<NoteController>().SetNoteData(note);
+					}
+					else if (note.GetType().Equals(typeof(LongNoteData)))
+					{
+						LongNoteData n = note as LongNoteData;
+						GameObject g = Instantiate(longNote, new Vector3(-1.0f + 0.4f * note.key, -0.999f, mapZ - (currentTime - note.startSecond) * speed * 10.0f), Quaternion.Euler(new Vector3(90.0f, 0.0f, 0.0f)));
+						g.transform.localScale += new Vector3(0, GetNoteLength(n), 0);
+						if (g != null)
+						{
+							g.GetComponent<NoteController>().SetNoteData(note);
+							g.GetComponent<NoteController>().SetNoteManager(this);
+						}
+					}
 
 					noteData.Remove(note);
 				}
@@ -139,7 +157,7 @@ public class NoteManager : MonoBehaviour
 			debugLog += noteData.key.ToString();
 			debugLog += '\n';
 		}
-		Debug.Log(debugLog);
+		// Debug.Log(debugLog);
 	}
 
 	public List<NoteData> GetNoteListInstance()
@@ -256,8 +274,9 @@ public class NoteManager : MonoBehaviour
 		return right;
 	}
 
-	private float GetNoteLength(float startSecond, float endSecond)
+	private float GetNoteLength(LongNoteData longNote)
 	{
+		float startSecond = longNote.startSecond, endSecond = GetStartSecond(longNote.endSecond);
 		int last = GetLastSpeed(startSecond, 1);
 		float distanceSum = 0;
 		int cnt = 0;
@@ -266,14 +285,14 @@ public class NoteManager : MonoBehaviour
 			// 다음 변속 전에 노트가 끝나면
 			if (endSecond <= speedData[last + 1].second)
 			{
-				distanceSum += (endSecond - speedData[last].second) * speedData[last].value * 10.0f;
+				distanceSum += (endSecond - startSecond) * speedData[last].value * 10.0f;
 				return distanceSum;
 			}
 
 			distanceSum += (speedData[last + 1].second - startSecond) * speedData[last].value * 10.0f;
 			startSecond = speedData[last + 1].second;
 			++last;
-			if (++cnt < 100)
+			if (++cnt > 100)
 			{
 				Debug.Log("INFINITE LOOP");
 				return 0;

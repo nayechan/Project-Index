@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class LongNoteData : NoteData
 {
-	float endBeat, endSecond;
-
+	public float endBeat, endSecond, length;
 	public LongNoteData(float beat, float endBeat, int key) : base(beat, key)
 	{
 		this.endBeat = endBeat;

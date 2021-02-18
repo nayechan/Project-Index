@@ -30,13 +30,13 @@ public class ChartManager : MonoBehaviour
 			.Split(new string[] { "#notedata" }, StringSplitOptions.None)[0].Trim();
 		string noteData = songData.Split(new string[] { "#notedata" }, StringSplitOptions.None)[1].Trim() ;
 
-		Debug.Log("version: " + version);
-		Debug.Log("title: " + title);
-		Debug.Log("artist: " + artist);
-		Debug.Log("bpm: " + bpm);
-		Debug.Log("offset: " + offset);
-		Debug.Log(timingData);
-		Debug.Log(noteData);
+		// Debug.Log("version: " + version);
+		// Debug.Log("title: " + title);
+		// Debug.Log("artist: " + artist);
+		// Debug.Log("bpm: " + bpm);
+		// Debug.Log("offset: " + offset);
+		// Debug.Log(timingData);
+		// Debug.Log(noteData);
 
 		// bpm과 speed 초깃값을 bpmData, speedData 리스트의 첫 요소로 넣어 준다.
 		bpmData.Add(new TimingData(0.0f, bpm));
@@ -74,11 +74,15 @@ public class ChartManager : MonoBehaviour
 				Match match = Regex.Match(str, @"(?<=^normalnote)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*,\s*key\s*:\s*(\d+)\s*}(?=\s*$)", options);
 				float beat = float.Parse(match.Groups[1].Value);
 				int key = int.Parse(match.Groups[2].Value);
-				noteManager.AddNote(new NoteData(beat, key));
+				noteManager.AddNote(new NormalNoteData(beat, key));
 			}
 			else if (str.Contains("longnote"))
 			{
-				// Match match = Regex.Match(str, @"(?<=^longnote)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*,\s*key\s*:\s*(\d+)\s*}(?=\s*$)", options);
+				Match match = Regex.Match(str, @"(?<=^longnote)\s*{\s*beat\s*:\s*(\d+\.?\d+|\d)\s*,\s*endbeat\s*:\s*(\d+\.?\d+|\d)\s*,\s*key\s*:\s*(\d+)\s*}(?=\s*$)", options);
+				float beat = float.Parse(match.Groups[1].Value);
+				float endBeat = float.Parse(match.Groups[2].Value);
+				int key = int.Parse(match.Groups[3].Value);
+				noteManager.AddNote(new LongNoteData(beat, endBeat, key));
 			}
 		}
 

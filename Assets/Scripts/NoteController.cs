@@ -26,6 +26,7 @@ public class NoteController : MonoBehaviour
 		if (b && pos < 0)
 		{
 			Debug.Log(minSecond);
+			b = false;
 		}
 	}
 
