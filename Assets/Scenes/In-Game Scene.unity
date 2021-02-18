@@ -1132,8 +1132,7 @@ MonoBehaviour:
   scoreDisplay: {fileID: 1953590392}
   hpDisplay: {fileID: 639541102}
   comboDisplay: {fileID: 610534513}
-  noteController: {fileID: 0}
-  normalNote: {fileID: 3616501480950260185, guid: b5fa5dbaed11dce4ab76723b3d5c6ee9,
+  normalNote: {fileID: 5487068251599533282, guid: 1b91863c4ae4ea249b69eeb19f88e16e,
     type: 3}
   longNote: {fileID: 6271453458295196869, guid: fc110bf5a98b47547a172d264228baa7,
     type: 3}
